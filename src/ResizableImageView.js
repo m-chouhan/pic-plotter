@@ -56,6 +56,7 @@ class ResizableImageView extends Component {
         onMouseDown={e => {
           console.log(e.nativeEvent.offsetX + "," + e.nativeEvent.offsetY);
         }}
+        style={{ maxWidth: 500, maxHeight: 500, overflow: "scroll" }}
         tabIndex="0"
       >
         <Stage

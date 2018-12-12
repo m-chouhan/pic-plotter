@@ -33,12 +33,11 @@ class ResizableImageView extends Component {
       default:
     }
 
-    this.setState({
-      scale: scale
-    });
+    this.setState({ scale });
   };
 
   render() {
+    const { scale } = this.state;
     return (
       <div
         style={{ maxWidth: 500, maxHeight: 500, overflow: "scroll" }}
@@ -48,14 +47,16 @@ class ResizableImageView extends Component {
           onMouseDown={event => {
             this.props.dispatch({
               type: "CREATE_POINT",
-              payload: { x: event.evt.offsetX, y: event.evt.offsetY }
+              payload: {
+                x: event.evt.offsetX / scale,
+                y: event.evt.offsetY / scale
+              }
             });
-            this.forceUpdate();
           }}
-          scaleX={this.state.scale}
-          scaleY={this.state.scale}
-          width={this.props.width * this.state.scale}
-          height={this.props.height * this.state.scale}
+          scaleX={scale}
+          scaleY={scale}
+          width={this.props.width * scale}
+          height={this.props.height * scale}
         >
           <Layer>
             <Image

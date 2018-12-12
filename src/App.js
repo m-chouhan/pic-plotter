@@ -49,10 +49,15 @@ class App extends Component {
           onChange={this.loadFile}
           style={{ paddingBottom: 10 }}
         />
-        {this.props.image && <ResizableImageView />}
+        <div>
+          {this.props.image && <ResizableImageView />}
+          {this.props.points.map(point => (
+            <li key={point.id}>{`${point.x}, ${point.y}`}</li>
+          ))}
+        </div>
       </div>
     );
   }
 }
 
-export default connect(state => ({ image: state.image }))(App);
+export default connect(state => ({ ...state }))(App);

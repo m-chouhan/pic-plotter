@@ -6,6 +6,18 @@ import "./App.css";
 class App extends Component {
   state = { file: undefined, image: undefined };
 
+  componentDidMount() {
+    const image = new window.Image();
+    image.src =
+      "https://i2.wp.com/ramenswag.com/wp-content/uploads/2016/12/naruto-wallpaper.jpg?resize=1060%2C663";
+    image.onload = () => {
+      this.props.dispatch({
+        type: "IMAGE_LOAD_SUCCESS",
+        payload: image
+      });
+    };
+  }
+
   loadFile = async event => {
     if (event.target.files && event.target.files[0]) {
       let reader = new FileReader();
@@ -15,8 +27,6 @@ class App extends Component {
         const image = new window.Image();
         image.src = e.target.result;
         image.onload = () => {
-          // setState will redraw layer
-          // because "image" property is changed
           this.props.dispatch({
             type: "IMAGE_LOAD_SUCCESS",
             payload: image
@@ -39,13 +49,7 @@ class App extends Component {
           onChange={this.loadFile}
           style={{ paddingBottom: 10 }}
         />
-        {this.props.image && (
-          <ResizableImageView
-            image={this.props.image}
-            width={this.props.image.width}
-            height={this.props.image.height}
-          />
-        )}
+        {this.props.image && <ResizableImageView />}
       </div>
     );
   }

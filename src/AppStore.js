@@ -5,6 +5,8 @@ const initAppState = {
 export const appStore = function(state = initAppState, action) {
   switch (action.type) {
     case "CREATE_POINT":
+      state.points.push({ ...action.payload, id: state.points.length });
+      break;
     case "DELETE_POINT":
     case "UPDATE_POINT":
       break;

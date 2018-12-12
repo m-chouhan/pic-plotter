@@ -1,28 +1,17 @@
 import React, { Component } from "react";
-import { Stage, Layer, Image } from "react-konva";
+import { Stage, Layer, Image, Rect, Circle } from "react-konva";
+import { connect } from "react-redux";
 
 const KEY_UP = 38;
 const KEY_DOWN = 40;
 
 class ResizableImageView extends Component {
   state = {
-    scale: 1
+    scale: 1,
+    color: "red"
   };
 
   componentDidMount() {
-    /*
-    this.state.image.src = "https://konvajs.github.io/assets/darth-vader.jpg";
-    this.state.image.onload = () => {
-      // calling set state here will do nothing
-      // because properties of Konva.Image are not changed
-      // so we need to update layer manually
-      this.imageNode.getLayer().batchDraw();
-      this.setState({
-        width: this.state.image.width,
-        height: this.state.image.height
-      });
-    };
-    */
     document.addEventListener("keydown", this.onKeyPressed);
   }
 
@@ -52,14 +41,17 @@ class ResizableImageView extends Component {
   render() {
     return (
       <div
-        onKeyPress={this.onKeyPressed}
-        onMouseDown={e => {
-          console.log(e.nativeEvent.offsetX + "," + e.nativeEvent.offsetY);
-        }}
         style={{ maxWidth: 500, maxHeight: 500, overflow: "scroll" }}
         tabIndex="0"
       >
         <Stage
+          onMouseDown={event => {
+            this.props.dispatch({
+              type: "CREATE_POINT",
+              payload: { x: event.evt.offsetX, y: event.evt.offsetY }
+            });
+            this.forceUpdate();
+          }}
           scaleX={this.state.scale}
           scaleY={this.state.scale}
           width={this.props.width * this.state.scale}
@@ -74,10 +66,27 @@ class ResizableImageView extends Component {
               }}
             />
           </Layer>
+          <Layer>
+            {this.props.points.map(point => (
+              <Circle
+                key={point.id}
+                x={point.x}
+                y={point.y}
+                radius={5}
+                fill={this.state.color}
+                shadowBlur={5}
+                onClick={() => console.log("clicked on circle")}
+              />
+            ))}
+          </Layer>
         </Stage>
       </div>
     );
   }
 }
 
-export default ResizableImageView;
+export default connect(state => ({
+  ...state,
+  width: state.image ? state.image.width : 0,
+  height: state.image ? state.image.height : 0
+}))(ResizableImageView);

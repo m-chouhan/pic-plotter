@@ -9,8 +9,7 @@ const KEY_DOWN = 40;
 
 class ResizableImageView extends Component {
   state = {
-    scale: 1,
-    color: "red"
+    scale: 1
   };
 
   componentDidMount() {
@@ -21,6 +20,16 @@ class ResizableImageView extends Component {
     document.removeEventListener("keydown", this.onKeyPressed);
   }
 
+  addPoint = event => {
+    this.props.dispatch({
+      type: "CREATE_POINT",
+      payload: {
+        x: Math.floor(event.evt.offsetX / this.state.scale),
+        y: Math.floor(event.evt.offsetY / this.state.scale)
+      }
+    });
+  };
+
   onKeyPressed = e => {
     console.log(e.keyCode);
     let { scale } = this.state;
@@ -30,7 +39,7 @@ class ResizableImageView extends Component {
         scale = scale > 1 ? scale - 1 : 1;
         break;
       case KEY_UP:
-        scale = scale < 4 ? scale + 1 : 4;
+        scale = scale < 5 ? scale + 1 : 5;
         break;
       default:
     }
@@ -50,15 +59,7 @@ class ResizableImageView extends Component {
         tabIndex="0"
       >
         <Stage
-          onMouseDown={event => {
-            this.props.dispatch({
-              type: "CREATE_POINT",
-              payload: {
-                x: event.evt.offsetX / scale,
-                y: event.evt.offsetY / scale
-              }
-            });
-          }}
+          onMouseDown={this.addPoint}
           scaleX={scale}
           scaleY={scale}
           width={this.props.width * scale}
@@ -74,28 +75,26 @@ class ResizableImageView extends Component {
             />
           </Layer>
           <Layer>
-            {createPairs(this.props.points).map(pair => (
-              <Group key={pair.id}>
+            {createPairs(this.props.points).map((pair, index) => (
+              <Group key={index}>
                 <Circle
-                  //key={pair.p1.id}
                   x={pair.p1.x}
                   y={pair.p1.y}
-                  radius={5}
-                  fill={this.state.color}
+                  radius={3}
+                  fill={this.props.selectionIndex !== index ? "green" : "red"}
                   shadowBlur={5}
                 />
                 <Circle
-                  //key={pair.p2.id}
                   x={pair.p2.x}
                   y={pair.p2.y}
-                  radius={5}
-                  fill={this.state.color}
+                  radius={3}
+                  fill={this.props.selectionIndex !== index ? "green" : "red"}
                   shadowBlur={5}
                 />
                 <Line
                   points={[pair.p1.x, pair.p1.y, pair.p2.x, pair.p2.y]}
-                  stroke="red"
-                  strokeWidth={5}
+                  stroke={this.props.selectionIndex !== index ? "green" : "red"}
+                  strokeWidth={3}
                   lineJoin="round"
                 />
               </Group>

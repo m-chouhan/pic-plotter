@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import ResizableImageView from "./ResizableImageView";
 import "./App.css";
 import { createPairs } from "./Utils";
+import Collapsible from "./Collapsible";
+// import Collapsible from "react-collapsible";
 
 class App extends Component {
   state = { file: undefined, image: undefined };
@@ -39,7 +42,22 @@ class App extends Component {
     } else console.warn("not present");
   };
 
+  deletePair = index => {
+    this.props.dispatch({
+      type: "DELETE_PAIR",
+      payload: index
+    });
+  };
+
+  setSelectedPair = index => {
+    this.props.dispatch({
+      type: "SET_SELECTION",
+      payload: index
+    });
+  };
   render() {
+    const pairs = createPairs(this.props.points);
+
     return (
       <div className="App-header">
         <input
@@ -56,9 +74,7 @@ class App extends Component {
             flexDirection: "row"
           }}
         >
-          {this.props.image && (
-            <ResizableImageView maxWidth={800} maxHeight={800} />
-          )}
+          {this.props.image && <ResizableImageView maxWidth={800} maxHeight={600} />}
           <div
             style={{
               paddingLeft: 20,
@@ -67,11 +83,26 @@ class App extends Component {
               overflow: "scroll"
             }}
           >
-            {createPairs(this.props.points).map(pair => {
-              return (
-                <pre key={pair.id}>{JSON.stringify(pair, undefined, 4)}</pre>
-              );
-            })}
+            {pairs.map((pair, index) => (
+              <div
+                className="Space-around-row"
+                style={{ color: index === this.props.selectionIndex ? "red" : "" }}
+                onClick={() => this.setSelectedPair(index)}
+                key={index}
+              >
+                <button onClick={() => this.deletePair(index * 2)}>X</button>
+                <div>
+                  &nbsp;{index + 1} [{pair.p1.x},{pair.p1.y}] &nbsp;[{pair.p2.x},{pair.p2.y}]
+                </div>
+              </div>
+            ))}
+            <Collapsible titleClose="open JSON" titleOpen="close JSON">
+              {pairs.map((pair, index) => (
+                <pre onClick={() => this.setSelectedPair(index)} key={index}>
+                  {JSON.stringify({ index, ...pair }, undefined, 4)}
+                </pre>
+              ))}
+            </Collapsible>
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import ResizableImageView from "./ResizableImageView";
 import "./App.css";
+import { createPairs } from "./Utils";
 
 class App extends Component {
   state = { file: undefined, image: undefined };
@@ -49,11 +50,29 @@ class App extends Component {
           onChange={this.loadFile}
           style={{ paddingBottom: 10 }}
         />
-        <div>
-          {this.props.image && <ResizableImageView />}
-          {this.props.points.map(point => (
-            <li key={point.id}>{`${point.x}, ${point.y}`}</li>
-          ))}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row"
+          }}
+        >
+          {this.props.image && (
+            <ResizableImageView maxWidth={800} maxHeight={800} />
+          )}
+          <div
+            style={{
+              paddingLeft: 20,
+              maxHeight: 500,
+              width: 350,
+              overflow: "scroll"
+            }}
+          >
+            {createPairs(this.props.points).map(pair => {
+              return (
+                <pre key={pair.id}>{JSON.stringify(pair, undefined, 4)}</pre>
+              );
+            })}
+          </div>
         </div>
       </div>
     );

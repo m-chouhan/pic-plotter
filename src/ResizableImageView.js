@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { Stage, Layer, Image, Rect, Circle } from "react-konva";
+import { Stage, Layer, Image, Rect, Circle, Group, Line } from "react-konva";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { createPairs } from "./Utils";
 
 const KEY_UP = 38;
 const KEY_DOWN = 40;
@@ -40,7 +42,11 @@ class ResizableImageView extends Component {
     const { scale } = this.state;
     return (
       <div
-        style={{ maxWidth: 500, maxHeight: 500, overflow: "scroll" }}
+        style={{
+          maxWidth: this.props.maxWidth,
+          maxHeight: this.props.maxHeight,
+          overflow: "scroll"
+        }}
         tabIndex="0"
       >
         <Stage
@@ -68,16 +74,31 @@ class ResizableImageView extends Component {
             />
           </Layer>
           <Layer>
-            {this.props.points.map(point => (
-              <Circle
-                key={point.id}
-                x={point.x}
-                y={point.y}
-                radius={5}
-                fill={this.state.color}
-                shadowBlur={5}
-                onClick={() => console.log("clicked on circle")}
-              />
+            {createPairs(this.props.points).map(pair => (
+              <Group key={pair.id}>
+                <Circle
+                  //key={pair.p1.id}
+                  x={pair.p1.x}
+                  y={pair.p1.y}
+                  radius={5}
+                  fill={this.state.color}
+                  shadowBlur={5}
+                />
+                <Circle
+                  //key={pair.p2.id}
+                  x={pair.p2.x}
+                  y={pair.p2.y}
+                  radius={5}
+                  fill={this.state.color}
+                  shadowBlur={5}
+                />
+                <Line
+                  points={[pair.p1.x, pair.p1.y, pair.p2.x, pair.p2.y]}
+                  stroke="red"
+                  strokeWidth={5}
+                  lineJoin="round"
+                />
+              </Group>
             ))}
           </Layer>
         </Stage>
@@ -86,6 +107,10 @@ class ResizableImageView extends Component {
   }
 }
 
+ResizableImageView.propTypes = {
+  maxWidth: PropTypes.number.isRequired,
+  maxHeight: PropTypes.number.isRequired
+};
 export default connect(state => ({
   ...state,
   width: state.image ? state.image.width : 0,

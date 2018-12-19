@@ -5,6 +5,7 @@ import ResizableImageView from "./ResizableImageView";
 import "./App.css";
 import { createPairs } from "../Utils";
 import Collapsible from "./Collapsible";
+import { UNDO, DELETE_PAIR, SET_SELECTION, IMAGE_LOAD_SUCCESS } from "../actions";
 
 class App extends Component {
   state = { file: undefined, image: undefined };
@@ -31,7 +32,7 @@ class App extends Component {
         image.src = e.target.result;
         image.onload = () => {
           this.props.dispatch({
-            type: "IMAGE_LOAD_SUCCESS",
+            type: IMAGE_LOAD_SUCCESS,
             payload: image
           });
         };
@@ -43,17 +44,24 @@ class App extends Component {
 
   deletePair = index => {
     this.props.dispatch({
-      type: "DELETE_PAIR",
+      type: DELETE_PAIR,
       payload: index
     });
   };
 
   setSelectedPair = index => {
     this.props.dispatch({
-      type: "SET_SELECTION",
+      type: SET_SELECTION,
       payload: index
     });
   };
+
+  undoAction = () => {
+    this.props.dispatch({
+      type: UNDO
+    });
+  };
+
   render() {
     const pairs = createPairs(this.props.points);
 
@@ -67,6 +75,10 @@ class App extends Component {
           onChange={this.loadFile}
           style={{ paddingBottom: 10 }}
         />
+        <div style={{ paddingBottom: 5 }}>
+          <button onClick={this.undoAction}>UNDO</button>
+          <button>REDO</button>
+        </div>
         <div
           style={{
             display: "flex",

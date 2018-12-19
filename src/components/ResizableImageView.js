@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Stage, Layer, Image, Rect, Circle, Group, Line } from "react-konva";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { createPairs } from "./Utils";
+import { createPairs } from "../Utils";
 
 const KEY_UP = 38;
 const KEY_DOWN = 40;
@@ -80,21 +80,21 @@ class ResizableImageView extends Component {
                 <Circle
                   x={pair.p1.x}
                   y={pair.p1.y}
-                  radius={3}
+                  radius={1}
                   fill={this.props.selectionIndex !== index ? "green" : "red"}
                   shadowBlur={5}
                 />
                 <Circle
                   x={pair.p2.x}
                   y={pair.p2.y}
-                  radius={3}
+                  radius={1}
                   fill={this.props.selectionIndex !== index ? "green" : "red"}
                   shadowBlur={5}
                 />
                 <Line
                   points={[pair.p1.x, pair.p1.y, pair.p2.x, pair.p2.y]}
                   stroke={this.props.selectionIndex !== index ? "green" : "red"}
-                  strokeWidth={3}
+                  strokeWidth={1}
                   lineJoin="round"
                 />
               </Group>

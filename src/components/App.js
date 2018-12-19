@@ -3,9 +3,8 @@ import { connect } from "react-redux";
 
 import ResizableImageView from "./ResizableImageView";
 import "./App.css";
-import { createPairs } from "./Utils";
+import { createPairs } from "../Utils";
 import Collapsible from "./Collapsible";
-// import Collapsible from "react-collapsible";
 
 class App extends Component {
   state = { file: undefined, image: undefined };
